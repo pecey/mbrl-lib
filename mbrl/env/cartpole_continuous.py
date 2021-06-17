@@ -61,7 +61,7 @@ class CartPoleEnv(gym.Env):
 
     metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": 50}
 
-    def __init__(self):
+    def __init__(self, noisy = False):
         self.gravity = 9.8
         self.masscart = 1.0
         self.masspole = 0.1
@@ -75,6 +75,8 @@ class CartPoleEnv(gym.Env):
         # Angle at which to fail the episode
         self.theta_threshold_radians = 12 * 2 * math.pi / 360
         self.x_threshold = 2.4
+
+        self.noisy = noisy
 
         # Angle limit set to 2 * theta_threshold_radians so failing observation
         # is still within bounds.
@@ -106,6 +108,11 @@ class CartPoleEnv(gym.Env):
         action = action.squeeze()
         x, x_dot, theta, theta_dot = self.state
         force = action * self.force_mag
+
+        # Add noise from 0-1 normal
+        if self.noisy:
+            force += np.random.normal(loc=0, scale=1)
+
         costheta = math.cos(theta)
         sintheta = math.sin(theta)
 
