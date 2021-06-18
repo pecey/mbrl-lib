@@ -13,6 +13,10 @@ def cartpole(act: torch.Tensor, next_obs: torch.Tensor) -> torch.Tensor:
     return (~termination_fns.cartpole(act, next_obs)).float().view(-1, 1)
 
 
+def continuous_mountain_car(act: torch.Tensor, next_obs: torch.Tensor) -> torch.Tensor:
+    reward = -100 * termination_fns.continuous_mountain_car(act, next_obs).float()
+    return reward - torch.pow(act[0], 2) * 0.1
+
 def inverted_pendulum(act: torch.Tensor, next_obs: torch.Tensor) -> torch.Tensor:
     assert len(next_obs.shape) == len(act.shape) == 2
 

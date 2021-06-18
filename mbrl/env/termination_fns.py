@@ -6,6 +6,7 @@ import math
 
 import torch
 
+
 # TODO remove act from all of these, it's not needed
 
 
@@ -15,10 +16,10 @@ def hopper(act: torch.Tensor, next_obs: torch.Tensor) -> torch.Tensor:
     height = next_obs[:, 0]
     angle = next_obs[:, 1]
     not_done = (
-        torch.isfinite(next_obs).all(-1)
-        * (next_obs[:, 1:] < 100).abs().all(-1)
-        * (height > 0.7)
-        * (angle.abs() < 0.2)
+            torch.isfinite(next_obs).all(-1)
+            * (next_obs[:, 1:] < 100).abs().all(-1)
+            * (height > 0.7)
+            * (angle.abs() < 0.2)
     )
 
     done = ~not_done
@@ -34,12 +35,24 @@ def cartpole(act: torch.Tensor, next_obs: torch.Tensor) -> torch.Tensor:
     x_threshold = 2.4
     theta_threshold_radians = 12 * 2 * math.pi / 360
     not_done = (
-        (x > -x_threshold)
-        * (x < x_threshold)
-        * (theta > -theta_threshold_radians)
-        * (theta < theta_threshold_radians)
+            (x > -x_threshold)
+            * (x < x_threshold)
+            * (theta > -theta_threshold_radians)
+            * (theta < theta_threshold_radians)
     )
     done = ~not_done
+    done = done[:, None]
+    return done
+
+
+def continuous_mountain_car(act: torch.Tensor, next_obs: torch.Tensor) -> torch.Tensor:
+    position, velocity = next_obs[:, 0], next_obs[:, 1]
+    goal_position = 0.45
+    goal_velocity = 0
+    done = (
+            (position >= goal_position)
+            * (velocity >= goal_velocity)
+    )
     done = done[:, None]
     return done
 
