@@ -58,6 +58,7 @@ class ModelEnv:
         else:
             self._rng = torch.Generator(device=self.device)
         self._return_as_np = True
+        self.goal = None if not hasattr(env, 'goal_x') else (env.goal_x, env.goal_y)
 
     def reset(
         self,
@@ -121,9 +122,10 @@ class ModelEnv:
             rewards = (
                 pred_rewards
                 if self.reward_fn is None
-                else self.reward_fn(actions, next_observs)
+                else (self.reward_fn(actions, next_observs, self.goal) if self.goal is not None
+                else self.reward_fn(actions, next_observs))
             )
-            dones = self.termination_fn(actions, next_observs)
+            dones = self.termination_fn(actions, next_observs) if self.goal is None else self.termination_fn(actions, next_observs, self.goal)
             self._current_obs = next_observs
             if self._return_as_np:
                 next_observs = next_observs.cpu().numpy()

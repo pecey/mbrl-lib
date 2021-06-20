@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 import torch
-
+from typing import Optional
 from . import termination_fns
 
 
@@ -16,6 +16,9 @@ def cartpole(act: torch.Tensor, next_obs: torch.Tensor) -> torch.Tensor:
 def continuous_mountain_car(act: torch.Tensor, next_obs: torch.Tensor) -> torch.Tensor:
     reward = -100 * termination_fns.continuous_mountain_car(act, next_obs).float()
     return reward - torch.pow(act[0], 2) * 0.1
+
+def continuous_dubins(act: torch.Tensor, next_obs: torch.Tensor, goal_state: Optional[tuple] = None) -> torch.Tensor:
+    return (~termination_fns.continuous_dubins(act, next_obs, goal_state)).float().view(-1, 1)
 
 def inverted_pendulum(act: torch.Tensor, next_obs: torch.Tensor) -> torch.Tensor:
     assert len(next_obs.shape) == len(act.shape) == 2

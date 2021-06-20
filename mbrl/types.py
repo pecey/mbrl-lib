@@ -8,8 +8,8 @@ from typing import Callable, Optional, Tuple, Union
 import numpy as np
 import torch
 
-RewardFnType = Callable[[torch.Tensor, torch.Tensor], torch.Tensor]
-TermFnType = Callable[[torch.Tensor, torch.Tensor], torch.Tensor]
+RewardFnType = Callable[[torch.Tensor, torch.Tensor, Optional[tuple]], torch.Tensor]
+TermFnType = Callable[[torch.Tensor, torch.Tensor, Optional[tuple]], torch.Tensor]
 ObsProcessFnType = Callable[[np.ndarray], np.ndarray]
 TensorType = Union[torch.Tensor, np.ndarray]
 TrajectoryEvalFnType = Callable[[TensorType, torch.Tensor], torch.Tensor]

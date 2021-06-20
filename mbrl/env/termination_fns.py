@@ -3,8 +3,8 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 import math
-
 import torch
+from typing import Optional
 
 
 # TODO remove act from all of these, it's not needed
@@ -53,6 +53,17 @@ def continuous_mountain_car(act: torch.Tensor, next_obs: torch.Tensor) -> torch.
             (position >= goal_position)
             * (velocity >= goal_velocity)
     )
+    done = done[:, None]
+    return done
+
+
+def continuous_dubins(act: torch.Tensor, next_obs: torch.Tensor, goal_state: Optional[tuple] = None) -> torch.Tensor:
+    x, y = next_obs[:, 0], next_obs[:, 1]
+    goal_boundary = 2
+    goal_x = torch.ones_like(x) * goal_state[0]
+    goal_y = torch.ones_like(y) * goal_state[1]
+    done = (torch.isclose(x, goal_x, atol=goal_boundary)
+            * torch.isclose(y, goal_y, atol=goal_boundary))
     done = done[:, None]
     return done
 
