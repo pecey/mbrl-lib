@@ -1,3 +1,5 @@
+import argparse
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -34,15 +36,19 @@ def plot_graph(_axs, _frame, _text, _trial, _steps_trial, _all_rewards, force_up
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--seed', type=int, help='Seed to initialize PRNG', default=42)
+    args = parser.parse_args()
+
     mpl.rcParams.update({"font.size": 16})
 
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     noisy = True
 
-    seed = 0
+    seed = args.seed
     env = cartpole_env.CartPoleEnv(noisy)
     env.seed(seed)
-    rng = np.random.default_rng(seed=0)
+    rng = np.random.default_rng(seed=seed)
     generator = torch.Generator(device=device)
     generator.manual_seed(seed)
     obs_shape = env.observation_space.shape
@@ -187,5 +193,5 @@ if __name__ == "__main__":
         all_rewards.append(total_reward)
 
     print(all_rewards)
-    plot_graph(axs, env.render(mode="rgb_array"), ax_text, trial, steps_trial, all_rewards, force_update=True)
-    fig.savefig("cartpole_noisy.png")
+    # plot_graph(axs, env.render(mode="rgb_array"), ax_text, trial, steps_trial, all_rewards, force_update=True)
+    # fig.savefig("cartpole_noisy.png")
