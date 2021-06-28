@@ -9,8 +9,8 @@ import omegaconf
 import mbrl.env.cartpole_continuous as cartpole_env
 import mbrl.env.reward_fns as reward_fns
 import mbrl.env.termination_fns as termination_fns
-import mbrl.models as models
-import mbrl.planning as planning
+# import mbrl.models as models
+# import mbrl.planning as planning
 import mbrl.util.common as common_util
 import mbrl.util as util
 
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     dynamics_model = common_util.create_one_dim_tr_model(cfg, obs_shape, act_shape)
 
     # Create a gym-like environment to encapsulate the model
-    model_env = models.ModelEnv(env, dynamics_model, term_fn, reward_fn, generator=generator)
+    model_env =mbrl.models.ModelEnv(env, dynamics_model, term_fn, reward_fn, generator=generator)
 
     replay_buffer = common_util.create_replay_buffer(cfg, obs_shape, act_shape, rng=rng)
     common_util.rollout_agent_trajectories(
@@ -138,7 +138,7 @@ if __name__ == "__main__":
         }
     })
 
-    agent = planning.create_trajectory_optim_agent_for_model(
+    agent =mbrl.planning.create_trajectory_optim_agent_for_model(
         model_env,
         agent_cfg,
         num_particles=20
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     val_scores = []
 
     # Create a trainer for the model
-    model_trainer = models.ModelTrainer(dynamics_model, optim_lr=1e-3, weight_decay=5e-5)
+    model_trainer =mbrl.models.ModelTrainer(dynamics_model, optim_lr=1e-3, weight_decay=5e-5)
 
     # Create visualization objects
     fig, axs = plt.subplots(1, 2, figsize=(14, 3.75), gridspec_kw={"width_ratios": [1, 1]})
